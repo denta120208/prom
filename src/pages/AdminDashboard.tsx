@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft, Lock, CheckCircle, XCircle, Send,
-  Loader2, Search, Filter, QrCode, Eye, User, Mail, Phone,
+  Loader2, Search, Filter, QrCode, Eye, User,
   Image, X,
 } from 'lucide-react'
 import { supabase, type Registration, type Ticket } from '../lib/supabase'
@@ -555,7 +555,7 @@ export default function AdminDashboard() {
                 }
               }}
               onTouchEnd={() => setIsDragging(false)}
-              onClick={(e) => {
+              onClick={() => {
                 if (proofZoom === 1 && !isDragging) {
                   setShowProof(null)
                   setProofZoom(1)

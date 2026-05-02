@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Calendar, MapPin, Ticket, Sparkles, Music, Flame } from 'lucide-react'
+import { Calendar, MapPin, Ticket, Sparkles, Music } from 'lucide-react'
 import promPoster from '../assets/prom.jpeg'
 
 export default function LandingPage() {
