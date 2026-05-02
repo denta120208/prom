@@ -30,9 +30,7 @@ export default function LandingPage() {
               className="w-full max-w-[320px] md:max-w-[400px] rounded-xl shadow-2xl animate-float"
               style={{ boxShadow: '0 0 40px rgba(212,175,55,0.25)' }}
             />
-            <div className="absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
-              <Flame size={14} /> PRESALE 1
-            </div>
+            
           </div>
         </motion.div>
 

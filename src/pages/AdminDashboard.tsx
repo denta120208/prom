@@ -297,149 +297,34 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Desktop Table */}
-        <div className="glass-card rounded-xl overflow-hidden overflow-x-auto hidden md:block">
+        {/* Registrations List */}
+        <div className="space-y-3">
           {loading ? (
             <div className="p-12 text-center">
               <Loader2 size={32} className="text-[#D4AF37] animate-spin mx-auto" />
             </div>
           ) : filtered.length === 0 ? (
-            <div className="p-12 text-center text-white/40">Tidak ada data</div>
-          ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/5 text-white/40 text-left">
-                  <th className="p-4 font-medium">Nama</th>
-                  <th className="p-4 font-medium">Kontak</th>
-                  <th className="p-4 font-medium">Tiket</th>
-                  <th className="p-4 font-medium">Total</th>
-                  <th className="p-4 font-medium">Bukti</th>
-                  <th className="p-4 font-medium">Status</th>
-                  <th className="p-4 font-medium">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map(reg => (
-                  <tr key={reg.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <User size={16} className="text-[#D4AF37]" />
-                        <p className="text-white font-medium">{reg.name}</p>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="space-y-1">
-                        <p className="text-white/60 flex items-center gap-1">
-                          <Mail size={12} className="text-[#D4AF37]" /> {reg.email}
-                        </p>
-                        <p className="text-white/60 flex items-center gap-1">
-                          <Phone size={12} className="text-[#D4AF37]" /> {reg.whatsapp}
-                        </p>
-                      </div>
-                    </td>
-                    <td className="p-4">{reg.ticket_count}</td>
-                    <td className="p-4 font-medium text-[#D4AF37]">
-                      Rp {reg.total_amount.toLocaleString('id-ID')}
-                    </td>
-                    <td className="p-4">
-                      {reg.payment_proof_url ? (
-                        <button
-                          onClick={() => { setShowProof(reg.payment_proof_url); setProofZoom(1); setProofPan({ x: 0, y: 0 }) }}
-                          className="relative group block"
-                          title="Lihat Bukti Pembayaran"
-                        >
-                          <img
-                            src={reg.payment_proof_url}
-                            alt="Bukti"
-                            className="w-12 h-12 object-cover rounded-lg border border-[#D4AF37]/30 group-hover:border-[#D4AF37] transition-colors"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.onerror = null
-                              target.style.display = 'none'
-                              target.nextElementSibling?.classList.remove('hidden')
-                            }}
-                          />
-                          <div className="hidden w-12 h-12 rounded-lg bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/30">
-                            <Image size={20} className="text-[#D4AF37]" />
-                          </div>
-                        </button>
-                      ) : (
-                        <span className="text-white/30 text-xs">Belum ada</span>
-                      )}
-                    </td>
-                    <td className="p-4">{statusBadge(reg.status)}</td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-1">
-                        {reg.status === 'menunggu' && (
-                          <>
-                            <button
-                              onClick={() => updateStatus(reg.id, 'diterima')}
-                              className="p-1.5 rounded-lg bg-green-400/10 text-green-400 hover:bg-green-400/20 transition-colors"
-                              title="Terima"
-                            >
-                              <CheckCircle size={16} />
-                            </button>
-                            <button
-                              onClick={() => updateStatus(reg.id, 'ditolak')}
-                              className="p-1.5 rounded-lg bg-red-400/10 text-red-400 hover:bg-red-400/20 transition-colors"
-                              title="Tolak"
-                            >
-                              <XCircle size={16} />
-                            </button>
-                          </>
-                        )}
-                        {reg.status === 'diterima' && (
-                          <button
-                            onClick={() => sendBarcode(reg)}
-                            className="p-1.5 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/20 transition-colors flex items-center gap-1"
-                            title="Kirim Barcode"
-                          >
-                            <Send size={14} />
-                            <span className="text-xs">Kirim</span>
-                          </button>
-                        )}
-                        <button
-                          onClick={() => viewTickets(reg)}
-                          className="p-1.5 rounded-lg bg-white/5 text-white/50 hover:text-white/80 transition-colors"
-                          title="Lihat Tiket"
-                        >
-                          <Eye size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-
-        {/* Mobile Cards */}
-        <div className="md:hidden space-y-3">
-          {loading ? (
-            <div className="p-12 text-center">
-              <Loader2 size={32} className="text-[#D4AF37] animate-spin mx-auto" />
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="p-12 text-center text-white/40">Tidak ada data</div>
+            <div className="glass-card rounded-xl p-12 text-center text-white/40">Tidak ada data</div>
           ) : (
             filtered.map(reg => (
               <div key={reg.id} className="glass-card rounded-xl p-4">
+                {/* Top row: Name + Status */}
                 <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <User size={16} className="text-[#D4AF37]" />
-                    <div>
-                      <p className="text-white font-medium text-sm">{reg.name}</p>
-                      <p className="text-white/40 text-xs">{reg.email}</p>
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <User size={16} className="text-[#D4AF37] shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-white font-medium text-sm truncate">{reg.name}</p>
+                      <p className="text-white/40 text-xs truncate">{reg.email}</p>
                     </div>
                   </div>
-                  {statusBadge(reg.status)}
+                  <div className="shrink-0 ml-2">{statusBadge(reg.status)}</div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+                {/* Info grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-3">
                   <div>
                     <p className="text-white/40">WhatsApp</p>
-                    <p className="text-white/70">{reg.whatsapp}</p>
+                    <p className="text-white/70 truncate">{reg.whatsapp}</p>
                   </div>
                   <div>
                     <p className="text-white/40">Tiket</p>
@@ -449,59 +334,59 @@ export default function AdminDashboard() {
                     <p className="text-white/40">Total</p>
                     <p className="text-[#D4AF37] font-medium">Rp {reg.total_amount.toLocaleString('id-ID')}</p>
                   </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-3 border-t border-white/5">
                   <div>
+                    <p className="text-white/40">Bukti</p>
                     {reg.payment_proof_url ? (
                       <button
                         onClick={() => { setShowProof(reg.payment_proof_url); setProofZoom(1); setProofPan({ x: 0, y: 0 }) }}
-                        className="flex items-center gap-2 text-[#D4AF37] text-xs hover:underline"
+                        className="flex items-center gap-1 text-[#D4AF37] hover:underline"
                       >
-                        <Image size={14} />
-                        Lihat Bukti
+                        <Image size={12} />
+                        Lihat
                       </button>
                     ) : (
-                      <span className="text-white/30 text-xs">Belum ada bukti</span>
+                      <span className="text-white/30">Belum ada</span>
                     )}
                   </div>
-                  <div className="flex items-center gap-1">
-                    {reg.status === 'menunggu' && (
-                      <>
-                        <button
-                          onClick={() => updateStatus(reg.id, 'diterima')}
-                          className="p-1.5 rounded-lg bg-green-400/10 text-green-400 hover:bg-green-400/20 transition-colors"
-                          title="Terima"
-                        >
-                          <CheckCircle size={16} />
-                        </button>
-                        <button
-                          onClick={() => updateStatus(reg.id, 'ditolak')}
-                          className="p-1.5 rounded-lg bg-red-400/10 text-red-400 hover:bg-red-400/20 transition-colors"
-                          title="Tolak"
-                        >
-                          <XCircle size={16} />
-                        </button>
-                      </>
-                    )}
-                    {reg.status === 'diterima' && (
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-end gap-1 pt-3 border-t border-white/5">
+                  {reg.status === 'menunggu' && (
+                    <>
                       <button
-                        onClick={() => sendBarcode(reg)}
-                        className="p-1.5 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/20 transition-colors flex items-center gap-1"
-                        title="Kirim Barcode"
+                        onClick={() => updateStatus(reg.id, 'diterima')}
+                        className="p-2 rounded-lg bg-green-400/10 text-green-400 hover:bg-green-400/20 transition-colors"
+                        title="Terima"
                       >
-                        <Send size={14} />
-                        <span className="text-xs">Kirim</span>
+                        <CheckCircle size={18} />
                       </button>
-                    )}
+                      <button
+                        onClick={() => updateStatus(reg.id, 'ditolak')}
+                        className="p-2 rounded-lg bg-red-400/10 text-red-400 hover:bg-red-400/20 transition-colors"
+                        title="Tolak"
+                      >
+                        <XCircle size={18} />
+                      </button>
+                    </>
+                  )}
+                  {reg.status === 'diterima' && (
                     <button
-                      onClick={() => viewTickets(reg)}
-                      className="p-1.5 rounded-lg bg-white/5 text-white/50 hover:text-white/80 transition-colors"
-                      title="Lihat Tiket"
+                      onClick={() => sendBarcode(reg)}
+                      className="p-2 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/20 transition-colors flex items-center gap-1"
+                      title="Kirim Barcode"
                     >
-                      <Eye size={16} />
+                      <Send size={16} />
+                      <span className="text-xs">Kirim</span>
                     </button>
-                  </div>
+                  )}
+                  <button
+                    onClick={() => viewTickets(reg)}
+                    className="p-2 rounded-lg bg-white/5 text-white/50 hover:text-white/80 transition-colors"
+                    title="Lihat Tiket"
+                  >
+                    <Eye size={18} />
+                  </button>
                 </div>
               </div>
             ))
