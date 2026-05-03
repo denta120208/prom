@@ -151,7 +151,7 @@ export default function UploadPaymentPage() {
               <img src={jagoLogo} alt="Bank Jago" className="w-10 h-10 rounded-lg object-contain bg-white p-1" />
               <div className="flex-1 min-w-0">
                 <p className="text-white/50 text-xs">Bank</p>
-                <p className="text-white font-medium">Bank Jago</p>
+                <p className="text-white font-medium">Bank Jago <span className="text-white/40 text-xs">(542)</span></p>
               </div>
             </div>
             <div className="bg-white/5 rounded-lg p-3">
