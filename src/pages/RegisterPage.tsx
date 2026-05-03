@@ -10,13 +10,30 @@ export default function RegisterPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
+  const [holderNames, setHolderNames] = useState<string[]>([''])
   const [loading, setLoading] = useState(false)
 
   const totalAmount = ticketCount * 85000
 
+  const handleTicketCountChange = (count: number) => {
+    setTicketCount(count)
+    setHolderNames(prev => {
+      const next = [...prev]
+      while (next.length < count) next.push('')
+      return next.slice(0, count)
+    })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name || !email || !whatsapp) return
+
+    const filledHolders = holderNames.map((h, i) => h.trim() || (ticketCount > 1 ? `${name} - Tiket ${i + 1}` : name))
+    if (filledHolders.some(h => !h)) {
+      alert('Isi nama pemilik untuk semua tiket')
+      return
+    }
+
     setLoading(true)
 
     const { data, error } = await supabase
@@ -27,6 +44,7 @@ export default function RegisterPage() {
         whatsapp,
         ticket_count: ticketCount,
         total_amount: totalAmount,
+        holder_names: filledHolders,
         status: 'menunggu',
       })
       .select()
@@ -77,7 +95,7 @@ export default function RegisterPage() {
             <div className="flex items-center gap-4">
               <button
                 type="button"
-                onClick={() => setTicketCount(Math.max(1, ticketCount - 1))}
+                onClick={() => handleTicketCountChange(Math.max(1, ticketCount - 1))}
                 className="w-10 h-10 rounded-lg bg-[#111] border border-[#1F1F1F] flex items-center justify-center hover:border-[#D4AF37] transition-colors"
               >
                 <Minus size={18} className="text-[#D4AF37]" />
@@ -88,7 +106,7 @@ export default function RegisterPage() {
               </div>
               <button
                 type="button"
-                onClick={() => setTicketCount(Math.min(10, ticketCount + 1))}
+                onClick={() => handleTicketCountChange(Math.min(10, ticketCount + 1))}
                 className="w-10 h-10 rounded-lg bg-[#111] border border-[#1F1F1F] flex items-center justify-center hover:border-[#D4AF37] transition-colors"
               >
                 <Plus size={18} className="text-[#D4AF37]" />
@@ -146,6 +164,37 @@ export default function RegisterPage() {
               className="w-full"
             />
           </motion.div>
+
+          {/* Ticket Holder Names */}
+          {ticketCount > 1 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-3"
+            >
+              <label className="block text-white/70 text-sm">Nama Pemilik Tiket</label>
+              {holderNames.map((h, i) => (
+                <div key={i}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Ticket size={14} className="text-[#D4AF37]" />
+                    <span className="text-white/50 text-xs">Tiket {i + 1}</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={h}
+                    onChange={(e) => {
+                      const next = [...holderNames]
+                      next[i] = e.target.value
+                      setHolderNames(next)
+                    }}
+                    placeholder={`Nama pemilik tiket ${i + 1}`}
+                    className="w-full text-sm"
+                  />
+                </div>
+              ))}
+              <p className="text-white/30 text-xs">Jika dikosongkan, akan menggunakan nama pemesan</p>
+            </motion.div>
+          )}
 
           {/* Total */}
           <motion.div

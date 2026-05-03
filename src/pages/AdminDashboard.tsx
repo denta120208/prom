@@ -105,7 +105,7 @@ export default function AdminDashboard() {
       const generated: Ticket[] = []
       for (let i = 0; i < reg.ticket_count; i++) {
         const barcode = `PROM2026-${reg.id.slice(0, 8)}-${String(i + 1).padStart(3, '0')}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`
-        const holderName = reg.ticket_count > 1 ? `${reg.name} - Tiket ${i + 1}` : reg.name
+        const holderName = reg.holder_names?.[i] || (reg.ticket_count > 1 ? `${reg.name} - Tiket ${i + 1}` : reg.name)
 
         const { data, error } = await supabase
           .from('tickets')

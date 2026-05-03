@@ -13,6 +13,7 @@ export type Registration = {
   ticket_count: number
   total_amount: number
   payment_proof_url: string | null
+  holder_names: string[] | null
   status: 'menunggu' | 'diterima' | 'ditolak'
   created_at: string
 }
