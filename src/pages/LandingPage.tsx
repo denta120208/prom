@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Calendar, MapPin, Ticket, Sparkles, Music } from 'lucide-react'
+import { Calendar, MapPin, Ticket, Sparkles, Music, Camera, PartyPopper } from 'lucide-react'
 import promPoster from '../assets/prom.jpeg'
 
 export default function LandingPage() {
@@ -131,11 +131,14 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             {[
               { icon: Calendar, title: 'Date & Time', desc: 'June 6, 2026\n19:00 - Until End' },
               { icon: MapPin, title: 'Venue', desc: 'Waterland\nWhere memories gather' },
               { icon: Sparkles, title: 'Dress Code', desc: 'Hollywood Glam\nShine all night long' },
+              { icon: PartyPopper, title: 'Fireworks', desc: 'Spectacular fireworks\nLight up the night sky' },
+              { icon: Music, title: 'Live Music', desc: 'Live performance\nFeel the rhythm all night' },
+              { icon: Camera, title: 'Photobooth', desc: 'Capture the moment\nHollywood-style photos' },
             ].map((item, i) => (
               <motion.div
                 key={i}
