@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Upload, CreditCard, Send, Loader2, X, Mail, MessageCircle, CheckCircle, Copy } from 'lucide-react'
@@ -16,6 +16,14 @@ export default function UploadPaymentPage() {
   const [loading, setLoading] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [regData, setRegData] = useState<{ ticket_count: number; total_amount: number; holder_names: string[] | null } | null>(null)
+
+  useEffect(() => {
+    if (registrationId) {
+      supabase.from('registrations').select('ticket_count, total_amount, holder_names').eq('id', registrationId).single()
+        .then(({ data }) => { if (data) setRegData(data) })
+    }
+  }, [registrationId])
 
   if (!registrationId) {
     return (
@@ -172,8 +180,27 @@ export default function UploadPaymentPage() {
               <span className="text-yellow-400">Awaiting Payment</span>
             </div>
           </div>
+          {regData && (
+            <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
+              <p className="text-[#D4AF37] text-xs font-semibold mb-2">Your Order</p>
+              <div className="flex justify-between text-sm">
+                <span className="text-white/50">Tickets</span>
+                <span className="text-white">{regData.ticket_count}x</span>
+              </div>
+              {regData.holder_names && regData.holder_names.map((name, i) => (
+                <div key={i} className="flex justify-between text-sm">
+                  <span className="text-white/50">Ticket {i + 1}</span>
+                  <span className="text-white/80">{name}</span>
+                </div>
+              ))}
+              <div className="flex justify-between text-sm pt-2 border-t border-white/5">
+                <span className="text-white/50">Total to Pay</span>
+                <span className="text-[#D4AF37] font-semibold">Rp {regData.total_amount.toLocaleString('id-ID')}</span>
+              </div>
+            </div>
+          )}
           <p className="text-white/40 text-xs mt-4">
-            * Transfer exact amount and upload payment proof below
+            * Transfer the exact amount and upload payment proof below
           </p>
         </motion.div>
 
