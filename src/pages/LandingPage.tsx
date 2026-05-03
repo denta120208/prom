@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Calendar, MapPin, Ticket, Sparkles, Music, Camera, PartyPopper } from 'lucide-react'
+import { Calendar, MapPin, Ticket, Sparkles, Music, Gamepad2, PartyPopper } from 'lucide-react'
 import promPoster from '../assets/prom.jpeg'
 
 export default function LandingPage() {
@@ -138,7 +138,7 @@ export default function LandingPage() {
               { icon: Sparkles, title: 'Dress Code', desc: 'Hollywood Glam\nShine all night long' },
               { icon: PartyPopper, title: 'Fireworks', desc: 'Spectacular fireworks\nLight up the night sky' },
               { icon: Music, title: 'Live Music', desc: 'Live performance\nFeel the rhythm all night' },
-              { icon: Camera, title: 'Games', desc: 'Fun party games\nPlay and win prizes' },
+              { icon: Gamepad2, title: 'Games', desc: 'Fun party games\nPlay and win prizes' },
             ].map((item, i) => (
               <motion.div
                 key={i}
