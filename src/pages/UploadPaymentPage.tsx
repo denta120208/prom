@@ -43,17 +43,39 @@ export default function UploadPaymentPage() {
     }
   }
 
+  const compressImage = (file: File, maxW = 1200, quality = 0.7): Promise<File> => {
+    return new Promise((resolve) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let w = img.width, h = img.height
+        if (w > maxW) { h = (maxW / w) * h; w = maxW }
+        canvas.width = w
+        canvas.height = h
+        const ctx = canvas.getContext('2d')!
+        ctx.drawImage(img, 0, 0, w, h)
+        canvas.toBlob(
+          (blob) => resolve(new File([blob!], file.name.replace(/\.\w+$/, '.jpg'), { type: 'image/jpeg' })),
+          'image/jpeg',
+          quality
+        )
+      }
+      img.src = URL.createObjectURL(file)
+    })
+  }
+
   const handleUpload = async () => {
     if (!file) return
     setLoading(true)
 
-    const fileExt = file.name.split('.').pop()
+    const compressed = file.type.startsWith('image/') ? await compressImage(file) : file
+    const fileExt = compressed.name.split('.').pop()
     const fileName = `${registrationId}_${Date.now()}.${fileExt}`
     const filePath = `payment-proofs/${fileName}`
 
     const { error: uploadError } = await supabase.storage
       .from('payments')
-      .upload(filePath, file, { upsert: true })
+      .upload(filePath, compressed, { upsert: true })
 
     if (uploadError) {
       setLoading(false)
