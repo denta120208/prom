@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Calendar, MapPin, Ticket, Sparkles, Music, Gamepad2, PartyPopper } from 'lucide-react'
+import { Calendar, MapPin, Ticket, Sparkles, Music, Gamepad2, PartyPopper, MessageCircle } from 'lucide-react'
 import promPoster from '../assets/prom.jpeg'
 
 export default function LandingPage() {
@@ -155,6 +155,28 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Contact Admin */}
+      <section className="py-12 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-md mx-auto text-center"
+        >
+          <h2 className="font-serif text-xl text-[#D4AF37] mb-3">Need Help?</h2>
+          <p className="text-white/50 text-sm mb-4">Contact admin if you have any questions or issues</p>
+          <a
+            href="https://wa.me/6281288886262"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 glass-card rounded-xl px-6 py-3 text-[#D4AF37] hover:bg-[#D4AF37]/10 transition-colors"
+          >
+            <MessageCircle size={18} />
+            <span className="text-sm font-medium">Chat Admin on WhatsApp</span>
+          </a>
+        </motion.div>
       </section>
 
       {/* Footer */}

@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Upload, CreditCard, Send, Loader2, X } from 'lucide-react'
+import { ArrowLeft, Upload, CreditCard, Send, Loader2, X, Mail, MessageCircle, CheckCircle, Copy } from 'lucide-react'
+import { AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
+import jagoLogo from '../assets/jago.png'
 
 export default function UploadPaymentPage() {
   const navigate = useNavigate()
@@ -12,6 +14,8 @@ export default function UploadPaymentPage() {
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   if (!registrationId) {
     return (
@@ -97,7 +101,14 @@ export default function UploadPaymentPage() {
       return
     }
 
-    navigate('/status', { state: { registrationId } })
+    setLoading(false)
+    setShowSuccess(true)
+  }
+
+  const copyAccount = () => {
+    navigator.clipboard.writeText('101507569565')
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   return (
@@ -133,20 +144,36 @@ export default function UploadPaymentPage() {
         >
           <div className="flex items-center gap-3 mb-4">
             <CreditCard size={20} className="text-[#D4AF37]" />
-            <span className="font-semibold text-[#D4AF37]">Informasi Pembayaran</span>
+            <span className="font-semibold text-[#D4AF37]">Payment Information</span>
           </div>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-white/50">Bank</span>
-              <span className="text-white">Transfer (konfirmasi ke admin)</span>
+          <div className="space-y-3 text-sm">
+            <div className="flex items-center gap-3 bg-white/5 rounded-lg p-3">
+              <img src={jagoLogo} alt="Bank Jago" className="w-10 h-10 rounded-lg object-contain bg-white p-1" />
+              <div className="flex-1 min-w-0">
+                <p className="text-white/50 text-xs">Bank</p>
+                <p className="text-white font-medium">Bank Jago</p>
+              </div>
+            </div>
+            <div className="bg-white/5 rounded-lg p-3">
+              <p className="text-white/50 text-xs mb-1">Account Number</p>
+              <div className="flex items-center justify-between">
+                <p className="text-white font-mono text-lg tracking-wider">101507569565</p>
+                <button
+                  onClick={copyAccount}
+                  className="p-1.5 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/20 transition-colors"
+                  title="Copy"
+                >
+                  {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
+                </button>
+              </div>
             </div>
             <div className="flex justify-between">
               <span className="text-white/50">Status</span>
-              <span className="text-yellow-400">Menunggu Pembayaran</span>
+              <span className="text-yellow-400">Awaiting Payment</span>
             </div>
           </div>
           <p className="text-white/40 text-xs mt-4">
-            * Hubungi admin untuk detail rekening pembayaran
+            * Transfer exact amount and upload payment proof below
           </p>
         </motion.div>
 
@@ -203,16 +230,59 @@ export default function UploadPaymentPage() {
           {loading ? (
             <>
               <Loader2 size={20} className="animate-spin" />
-              Mengupload...
+              Uploading...
             </>
           ) : (
             <>
               <Send size={20} />
-              Kirim Bukti Pembayaran
+              Submit Payment Proof
             </>
           )}
         </motion.button>
       </div>
+
+      {/* Success Modal */}
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"
+            onClick={() => { setShowSuccess(false); navigate('/status', { state: { registrationId } }) }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="glass-card rounded-2xl p-6 max-w-sm w-full text-center"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="w-16 h-16 rounded-full bg-green-400/10 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle size={32} className="text-green-400" />
+              </div>
+              <h3 className="font-serif text-xl gold-text-gradient mb-2">Payment Proof Sent!</h3>
+              <p className="text-white/60 text-sm mb-4">Your payment proof has been submitted. Admin will verify your payment shortly.</p>
+              <div className="bg-white/5 rounded-lg p-4 mb-4 space-y-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <Mail size={16} className="text-[#D4AF37] shrink-0" />
+                  <span className="text-white/70">Check your Gmail regularly for ticket confirmation</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <MessageCircle size={16} className="text-[#D4AF37] shrink-0" />
+                  <span className="text-white/70">Contact admin if you need help</span>
+                </div>
+              </div>
+              <button
+                onClick={() => { setShowSuccess(false); navigate('/status', { state: { registrationId } }) }}
+                className="w-full gold-gradient text-[#050505] font-bold py-3 rounded-xl"
+              >
+                View Status
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
