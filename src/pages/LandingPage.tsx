@@ -67,7 +67,7 @@ export default function LandingPage() {
         >
           <div className="flex items-center gap-2 text-white/80 text-sm">
             <Calendar size={18} className="text-[#D4AF37]" />
-            <span>6 Juni 2026 — 19.00</span>
+            <span>June 6, 2026 — 19:00</span>
           </div>
           <div className="flex items-center gap-2 text-white/80 text-sm">
             <MapPin size={18} className="text-[#D4AF37]" />
@@ -110,7 +110,7 @@ export default function LandingPage() {
           onClick={() => navigate('/daftar')}
           className="relative z-10 gold-gradient text-[#050505] font-bold text-lg px-10 py-4 rounded-full tracking-wide animate-pulse-gold"
         >
-          Daftar Sekarang
+          Register Now
         </motion.button>
       </section>
 
@@ -127,15 +127,15 @@ export default function LandingPage() {
               Event Details
             </h2>
             <p className="text-white/60 max-w-lg mx-auto">
-              Malam penuh glamor dan kenangan terakhir bersama. Rayakan momen istimewa dengan suasana Hollywood yang mewah.
+              A night of glamour and final memories together. Celebrate this special moment in a luxurious Hollywood atmosphere.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { icon: Calendar, title: 'Date & Time', desc: '6 Juni 2026\n19.00 - Selesai' },
-              { icon: MapPin, title: 'Venue', desc: 'Waterland\nTempat berkumpulnya kenangan' },
-              { icon: Sparkles, title: 'Dress Code', desc: 'Hollywood Glam\nBersinar sepanjang malam' },
+              { icon: Calendar, title: 'Date & Time', desc: 'June 6, 2026\n19:00 - Until End' },
+              { icon: MapPin, title: 'Venue', desc: 'Waterland\nWhere memories gather' },
+              { icon: Sparkles, title: 'Dress Code', desc: 'Hollywood Glam\nShine all night long' },
             ].map((item, i) => (
               <motion.div
                 key={i}
