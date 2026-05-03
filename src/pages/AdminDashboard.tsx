@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft, Lock, CheckCircle, XCircle, Send,
   Loader2, Search, Filter, QrCode, Eye, User,
-  Image, X,
+  Image, X, Trash2,
 } from 'lucide-react'
 import { supabase, type Registration, type Ticket } from '../lib/supabase'
 import { QRCodeSVG } from 'qrcode.react'
@@ -85,6 +85,28 @@ export default function AdminDashboard() {
     setRegistrations(prev =>
       prev.map(r => r.id === id ? { ...r, status } : r)
     )
+  }
+
+  const deleteRegistration = async (reg: Registration) => {
+    if (!confirm(`Hapus data ${reg.name}? Semua tiket dan bukti pembayaran akan dihapus.`)) return
+
+    // Delete tickets first
+    await supabase.from('tickets').delete().eq('registration_id', reg.id)
+
+    // Delete payment proof from storage
+    if (reg.payment_proof_url) {
+      const path = reg.payment_proof_url.split('/payments/')[1]
+      if (path) await supabase.storage.from('payments').remove([`payment-proofs/${path.split('/').pop()}`])
+    }
+
+    // Delete registration
+    const { error } = await supabase.from('registrations').delete().eq('id', reg.id)
+    if (error) {
+      alert('Gagal menghapus: ' + error.message)
+      return
+    }
+
+    setRegistrations(prev => prev.filter(r => r.id !== reg.id))
   }
 
   const sendBarcode = async (reg: Registration) => {
@@ -386,6 +408,13 @@ export default function AdminDashboard() {
                     title="Lihat Tiket"
                   >
                     <Eye size={18} />
+                  </button>
+                  <button
+                    onClick={() => deleteRegistration(reg)}
+                    className="p-2 rounded-lg bg-red-400/10 text-red-400 hover:bg-red-400/20 transition-colors"
+                    title="Hapus"
+                  >
+                    <Trash2 size={18} />
                   </button>
                 </div>
               </div>
