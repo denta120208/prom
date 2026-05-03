@@ -138,7 +138,7 @@ export default function LandingPage() {
               { icon: Sparkles, title: 'Dress Code', desc: 'Hollywood Glam\nShine all night long' },
               { icon: PartyPopper, title: 'Fireworks', desc: 'Spectacular fireworks\nLight up the night sky' },
               { icon: Music, title: 'Live Music', desc: 'Live performance\nFeel the rhythm all night' },
-              { icon: Camera, title: 'Photobooth', desc: 'Capture the moment\nHollywood-style photos' },
+              { icon: Camera, title: 'Games', desc: 'Fun party games\nPlay and win prizes' },
             ].map((item, i) => (
               <motion.div
                 key={i}
