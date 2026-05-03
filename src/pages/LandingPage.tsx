@@ -168,7 +168,7 @@ export default function LandingPage() {
           <h2 className="font-serif text-xl text-[#D4AF37] mb-3">Need Help?</h2>
           <p className="text-white/50 text-sm mb-4">Contact admin if you have any questions or issues</p>
           <a
-            href="https://wa.me/6281288886262"
+            href="https://wa.me/628161984575"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 glass-card rounded-xl px-6 py-3 text-[#D4AF37] hover:bg-[#D4AF37]/10 transition-colors"
