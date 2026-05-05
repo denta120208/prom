@@ -114,7 +114,7 @@ export default function UploadPaymentPage() {
   }
 
   const copyAccount = () => {
-    navigator.clipboard.writeText('101507569565')
+    navigator.clipboard.writeText('103875464247')
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -165,7 +165,7 @@ export default function UploadPaymentPage() {
             <div className="bg-white/5 rounded-lg p-3">
               <p className="text-white/50 text-xs mb-1">Account Number</p>
               <div className="flex items-center justify-between">
-                <p className="text-white font-mono text-lg tracking-wider">101507569565</p>
+                <p className="text-white font-mono text-lg tracking-wider">103875464247</p>
                 <button
                   onClick={copyAccount}
                   className="p-1.5 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/20 transition-colors"
@@ -202,6 +202,9 @@ export default function UploadPaymentPage() {
           <p className="text-white/40 text-xs mt-4">
             * Transfer the exact amount and upload payment proof below
           </p>
+          <div className="mt-3 bg-red-400/5 border border-red-400/20 rounded-lg p-3 text-center">
+            <p className="text-red-400/80 text-xs font-medium">⚠ No Refund — All payments are non-refundable</p>
+          </div>
         </motion.div>
 
         {/* Upload Area */}
