@@ -46,6 +46,18 @@ export default function AdminDashboard() {
       'Created At': new Date(r.created_at).toLocaleString('id-ID'),
     }))
     const ws = XLSX.utils.json_to_sheet(data)
+    ws['!cols'] = [
+      { wch: 6 },   // No
+      { wch: 25 },  // Name
+      { wch: 30 },  // Email
+      { wch: 16 },  // WhatsApp
+      { wch: 12 },  // Package
+      { wch: 10 },  // Tickets
+      { wch: 12 },  // Total
+      { wch: 12 },  // Status
+      { wch: 40 },  // Holder Names
+      { wch: 22 },  // Created At
+    ]
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Registrations')
     XLSX.writeFile(wb, 'prom-night-registrations.xlsx')
