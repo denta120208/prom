@@ -4,10 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft, Lock, CheckCircle, XCircle, Send,
   Loader2, Search, Filter, QrCode, Eye, User,
-  Image, X, Trash2,
+  Image, X, Trash2, FileDown,
 } from 'lucide-react'
 import { supabase, type Registration, type Ticket } from '../lib/supabase'
 import { QRCodeSVG } from 'qrcode.react'
+import * as XLSX from 'xlsx'
 
 export default function AdminDashboard() {
   const navigate = useNavigate()
@@ -30,6 +31,25 @@ export default function AdminDashboard() {
   const [proofPan, setProofPan] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+
+  const exportToExcel = () => {
+    const data = registrations.map((r, i) => ({
+      'No': i + 1,
+      'Name': r.name,
+      'Email': r.email,
+      'WhatsApp': r.whatsapp,
+      'Package': r.ticket_type || 'single',
+      'Tickets': r.ticket_count,
+      'Total': r.total_amount,
+      'Status': r.status,
+      'Holder Names': r.holder_names?.join(', ') || r.name,
+      'Created At': new Date(r.created_at).toLocaleString('id-ID'),
+    }))
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Registrations')
+    XLSX.writeFile(wb, 'prom-night-registrations.xlsx')
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -316,6 +336,13 @@ export default function AdminDashboard() {
                 {f === 'all' ? 'Semua' : f}
               </button>
             ))}
+            <button
+              onClick={exportToExcel}
+              className="px-3 py-1.5 rounded-lg text-xs bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors flex items-center gap-1.5"
+            >
+              <FileDown size={14} />
+              Export Excel
+            </button>
           </div>
         </div>
 
