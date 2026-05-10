@@ -10,6 +10,7 @@ export type Registration = {
   name: string
   email: string
   whatsapp: string
+  ticket_type: 'single' | 'couple' | 'squad'
   ticket_count: number
   total_amount: number
   payment_proof_url: string | null

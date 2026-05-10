@@ -16,11 +16,11 @@ export default function UploadPaymentPage() {
   const [loading, setLoading] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [regData, setRegData] = useState<{ ticket_count: number; total_amount: number; holder_names: string[] | null } | null>(null)
+  const [regData, setRegData] = useState<{ ticket_type: string; ticket_count: number; total_amount: number; holder_names: string[] | null } | null>(null)
 
   useEffect(() => {
     if (registrationId) {
-      supabase.from('registrations').select('ticket_count, total_amount, holder_names').eq('id', registrationId).single()
+      supabase.from('registrations').select('ticket_type, ticket_count, total_amount, holder_names').eq('id', registrationId).single()
         .then(({ data }) => { if (data) setRegData(data) })
     }
   }, [registrationId])
@@ -183,6 +183,10 @@ export default function UploadPaymentPage() {
           {regData && (
             <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
               <p className="text-[#D4AF37] text-xs font-semibold mb-2">Your Order</p>
+              <div className="flex justify-between text-sm">
+                <span className="text-white/50">Package</span>
+                <span className="text-white capitalize">{regData.ticket_type || 'single'}</span>
+              </div>
               <div className="flex justify-between text-sm">
                 <span className="text-white/50">Tickets</span>
                 <span className="text-white">{regData.ticket_count}x</span>

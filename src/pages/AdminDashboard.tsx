@@ -343,10 +343,14 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Info grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-3">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs mb-3">
                   <div>
                     <p className="text-white/40">WhatsApp</p>
                     <p className="text-white/70 truncate">{reg.whatsapp}</p>
+                  </div>
+                  <div>
+                    <p className="text-white/40">Package</p>
+                    <p className="text-white/70 capitalize">{reg.ticket_type || 'single'}</p>
                   </div>
                   <div>
                     <p className="text-white/40">Tiket</p>

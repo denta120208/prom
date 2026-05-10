@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Calendar, MapPin, Ticket, Sparkles, Music, Gamepad2, PartyPopper, MessageCircle } from 'lucide-react'
+import { Calendar, MapPin, Ticket, Sparkles, Music, Gamepad2, PartyPopper, MessageCircle, User, Users } from 'lucide-react'
 import promPoster from '../assets/prom.jpeg'
 
 export default function LandingPage() {
@@ -79,25 +79,41 @@ export default function LandingPage() {
           </div>
         </motion.div>
 
-        {/* Ticket Info */}
+        {/* Ticket Packages */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="relative z-10 glass-card rounded-2xl p-6 md:p-8 mb-10 max-w-sm w-full glow-gold"
+          className="relative z-10 w-full max-w-lg mb-10"
         >
           <div className="flex items-center justify-center gap-2 mb-4">
             <Ticket size={20} className="text-[#D4AF37]" />
             <span className="text-[#D4AF37] font-semibold tracking-wide">PRESALE ONLY</span>
           </div>
-          <div className="text-center">
-            <p className="font-serif text-4xl md:text-5xl gold-text-gradient mb-1">Rp 85.000</p>
-            <p className="text-white/50 text-sm">Only 60 Tickets Available</p>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { icon: User, label: 'Single', price: 'Rp 85.000', people: '1 Person', highlight: false },
+              { icon: Users, label: 'Couple', price: 'Rp 160.000', people: '2 People', highlight: true },
+              { icon: PartyPopper, label: 'Squad', price: 'Rp 300.000', people: '4 People', highlight: true },
+            ].map((pkg, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 + i * 0.1 }}
+                className={`glass-card rounded-xl p-4 text-center ${pkg.highlight ? 'border-[#D4AF37]/30' : 'border-white/10'}`}
+              >
+                {pkg.highlight && (
+                  <span className="inline-block text-[10px] bg-[#D4AF37]/20 text-[#D4AF37] px-2 py-0.5 rounded-full mb-2">Best Deal</span>
+                )}
+                <pkg.icon size={24} className="text-[#D4AF37] mx-auto mb-2" />
+                <p className="text-white font-semibold text-sm">{pkg.label}</p>
+                <p className="text-white/40 text-xs">{pkg.people}</p>
+                <p className="text-[#D4AF37] font-semibold text-sm mt-1">{pkg.price}</p>
+              </motion.div>
+            ))}
           </div>
-          <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-center gap-2 text-white/60 text-xs">
-            <Music size={14} className="text-[#D4AF37]" />
-            <span>Include FDC (Drink & Snack)</span>
-          </div>
+          <p className="text-white/50 text-xs text-center mt-3">Only 60 Tickets Available</p>
         </motion.div>
 
         {/* CTA */}

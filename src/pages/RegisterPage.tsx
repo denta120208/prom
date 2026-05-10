@@ -1,11 +1,20 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Ticket, Minus, Plus, Send } from 'lucide-react'
+import { ArrowLeft, Ticket, Send, User, Users, PartyPopper } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+
+const PACKAGES = {
+  single: { count: 1, price: 85000, label: 'Single', icon: User, desc: '1 Person' },
+  couple: { count: 2, price: 160000, label: 'Couple', icon: Users, desc: '2 People' },
+  squad:  { count: 4, price: 300000, label: 'Squad', icon: PartyPopper, desc: '4 People' },
+} as const
+
+type PackageKey = keyof typeof PACKAGES
 
 export default function RegisterPage() {
   const navigate = useNavigate()
+  const [ticketType, setTicketType] = useState<PackageKey>('single')
   const [ticketCount, setTicketCount] = useState(1)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -13,15 +22,13 @@ export default function RegisterPage() {
   const [holderNames, setHolderNames] = useState<string[]>([''])
   const [loading, setLoading] = useState(false)
 
-  const totalAmount = ticketCount * 85000
+  const pkg = PACKAGES[ticketType]
+  const totalAmount = pkg.price
 
-  const handleTicketCountChange = (count: number) => {
-    setTicketCount(count)
-    setHolderNames(prev => {
-      const next = [...prev]
-      while (next.length < count) next.push('')
-      return next.slice(0, count)
-    })
+  const selectPackage = (type: PackageKey) => {
+    setTicketType(type)
+    setTicketCount(PACKAGES[type].count)
+    setHolderNames(Array(PACKAGES[type].count).fill(''))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,6 +49,7 @@ export default function RegisterPage() {
         name,
         email,
         whatsapp,
+        ticket_type: ticketType,
         ticket_count: ticketCount,
         total_amount: totalAmount,
         holder_names: filledHolders,
@@ -77,40 +85,50 @@ export default function RegisterPage() {
           className="mb-8"
         >
           <h1 className="font-serif text-3xl md:text-4xl gold-text-gradient mb-2">
-            Registrasi Prom Night
+            Ticket Registration
           </h1>
           <p className="text-white/50 text-sm">
-            Isi data diri untuk memesan tiket
+            Fill in your details to order tickets
           </p>
         </motion.div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Ticket Count */}
+          {/* Package Selection */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
+            className="space-y-3"
           >
-            <label className="block text-white/70 text-sm mb-3">Jumlah Tiket</label>
-            <div className="flex items-center gap-4">
-              <button
-                type="button"
-                onClick={() => handleTicketCountChange(Math.max(1, ticketCount - 1))}
-                className="w-10 h-10 rounded-lg bg-[#111] border border-[#1F1F1F] flex items-center justify-center hover:border-[#D4AF37] transition-colors"
-              >
-                <Minus size={18} className="text-[#D4AF37]" />
-              </button>
-              <div className="flex items-center gap-2 text-xl font-semibold">
-                <Ticket size={20} className="text-[#D4AF37]" />
-                <span>{ticketCount}</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleTicketCountChange(Math.min(10, ticketCount + 1))}
-                className="w-10 h-10 rounded-lg bg-[#111] border border-[#1F1F1F] flex items-center justify-center hover:border-[#D4AF37] transition-colors"
-              >
-                <Plus size={18} className="text-[#D4AF37]" />
-              </button>
+            <label className="block text-white/70 text-sm mb-3">Choose Ticket Package</label>
+            <div className="grid grid-cols-3 gap-3">
+              {(['single', 'couple', 'squad'] as PackageKey[]).map((key) => {
+                const p = PACKAGES[key]
+                const Icon = p.icon
+                const isActive = ticketType === key
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => selectPackage(key)}
+                    className={`relative rounded-xl p-4 border transition-all duration-200 text-left ${
+                      isActive
+                        ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-[0_0_20px_rgba(212,175,55,0.15)]'
+                        : 'border-white/10 bg-white/[0.02] hover:border-white/20'
+                    }`}
+                  >
+                    {isActive && (
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#D4AF37] rounded-full flex items-center justify-center">
+                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1.5" stroke="#050505" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      </div>
+                    )}
+                    <Icon size={20} className={isActive ? 'text-[#D4AF37]' : 'text-white/40'} />
+                    <p className="text-white font-semibold text-sm mt-2">{p.label}</p>
+                    <p className="text-white/40 text-xs">{p.desc}</p>
+                    <p className="text-[#D4AF37] font-semibold text-sm mt-1">Rp {p.price.toLocaleString('id-ID')}</p>
+                  </button>
+                )
+              })}
             </div>
           </motion.div>
 
@@ -120,13 +138,13 @@ export default function RegisterPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <label className="block text-white/70 text-sm mb-2">Nama Lengkap</label>
+            <label className="block text-white/70 text-sm mb-2">Full Name (PIC)</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Masukkan nama lengkap"
+              placeholder="Enter your full name"
               className="w-full"
             />
           </motion.div>
@@ -154,7 +172,7 @@ export default function RegisterPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <label className="block text-white/70 text-sm mb-2">Nomor WhatsApp</label>
+            <label className="block text-white/70 text-sm mb-2">WhatsApp Number</label>
             <input
               type="tel"
               required
@@ -166,35 +184,40 @@ export default function RegisterPage() {
           </motion.div>
 
           {/* Ticket Holder Names */}
-          {ticketCount > 1 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-3"
-            >
-              <label className="block text-white/70 text-sm">Nama Pemilik Tiket</label>
-              {holderNames.map((h, i) => (
-                <div key={i}>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Ticket size={14} className="text-[#D4AF37]" />
-                    <span className="text-white/50 text-xs">Tiket {i + 1}</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={h}
-                    onChange={(e) => {
-                      const next = [...holderNames]
-                      next[i] = e.target.value
-                      setHolderNames(next)
-                    }}
-                    placeholder={`Nama pemilik tiket ${i + 1}`}
-                    className="w-full text-sm"
-                  />
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-3"
+          >
+            <label className="block text-white/70 text-sm">
+              {ticketType === 'single' ? 'Ticket Holder Name' : 'Ticket Holder Names'}
+              <span className="text-[#D4AF37] text-xs ml-2">
+                {ticketType === 'single' ? '(1 name required)' : `(${pkg.count} names required)`}
+              </span>
+            </label>
+            {holderNames.map((h, i) => (
+              <div key={i}>
+                <div className="flex items-center gap-2 mb-1">
+                  <Ticket size={14} className="text-[#D4AF37]" />
+                  <span className="text-white/50 text-xs">
+                    {pkg.count === 1 ? 'Ticket Holder' : `Ticket ${i + 1}`}
+                  </span>
                 </div>
-              ))}
-              <p className="text-white/30 text-xs">Jika dikosongkan, akan menggunakan nama pemesan</p>
-            </motion.div>
-          )}
+                <input
+                  type="text"
+                  value={h}
+                  required
+                  onChange={(e) => {
+                    const next = [...holderNames]
+                    next[i] = e.target.value
+                    setHolderNames(next)
+                  }}
+                  placeholder={ticketType === 'single' ? 'Full name' : `Ticket holder name ${i + 1}`}
+                  className="w-full text-sm"
+                />
+              </div>
+            ))}
+          </motion.div>
 
           {/* Total */}
           <motion.div
@@ -204,10 +227,10 @@ export default function RegisterPage() {
             className="glass-card rounded-xl p-5"
           >
             <div className="flex justify-between items-center mb-2">
-              <span className="text-white/60 text-sm">{ticketCount} Tiket x Rp 85.000</span>
+              <span className="text-white/60 text-sm capitalize">{pkg.label} Package — {pkg.desc}</span>
             </div>
             <div className="border-t border-white/10 pt-3 flex justify-between items-center">
-              <span className="text-white/70">Total Pembayaran</span>
+              <span className="text-white/70">Total Payment</span>
               <span className="font-serif text-2xl gold-text-gradient">
                 Rp {totalAmount.toLocaleString('id-ID')}
               </span>
@@ -227,7 +250,7 @@ export default function RegisterPage() {
             {loading ? 'Menyimpan...' : (
               <>
                 <Send size={20} />
-                Lanjutkan ke Pembayaran
+                Continue to Payment
               </>
             )}
           </motion.button>
